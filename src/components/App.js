@@ -11,6 +11,10 @@ function App() {
   const handleMoreSushi = () => {
     setSushi(currentSushiList => [...currentSushiList.slice(amountToSlice), ...currentSushiList.slice(0, amountToSlice)])
   }
+  const handleEatSushi = (sushiId) => {
+    setSushi(mostRecentSushiCollection => mostRecentSushiCollection.map(sushi => sushi.id === sushiId ? {...sushi, isEaten: true} : sushi))
+  }
+
   useEffect(() => {
     (() => {
       fetch(API)
@@ -20,14 +24,14 @@ function App() {
         }
         return res.json()
       })
-      .then(setSushi)
+      .then(sushiList => setSushi(sushiList.map(sushiObj => ({...sushiObj, isEaten: false}))))
       .catch(err => console.log(err))
     })()
   }, [])
 
   return (
     <div className="app">
-      <SushiContainer sushi={sushi} handleMoreSushi={handleMoreSushi} amountToSlice={amountToSlice}/>
+      <SushiContainer sushi={sushi} handleMoreSushi={handleMoreSushi} amountToSlice={amountToSlice} handleEatSushi={handleEatSushi }/>
       <Table />
     </div>
   );
